@@ -1,0 +1,65 @@
+-- Runtime Monitoring Operators (Start, End, Interval, First, Last)
+-- [Reference for Runtime Monitors w.r.t to LTL:] 
+-- Reinbacher, Thomas, et al. "Past time LTL runtime verification for microcontroller binary code." International Workshop on Formal Methods for Industrial Critical Systems. Springer, Berlin, Heidelberg, 2011.
+-- Start(\phi) := \phi is true in the current state and false in the previous state
+node Start(i: bool) returns (o:bool);
+let
+   o = i and (not Y(i));  
+tel
+
+node Start1(i: bool) returns (o:bool);
+let
+   o = i and (not (false -> pre(i)));  
+tel
+
+-- End \phi is false in the current state and true in the previous state
+node End(i: bool) returns (o:bool);
+let
+   o = not i and Y(i);  
+tel
+
+-- Interval [\phi,\psi) := \psi was never true since last time \phi was true, include the state when \phi was true.
+
+node Interval(i, j: bool) returns (o:bool);
+let
+   o = (not j) and S (Y(not j),  i);  
+tel
+
+-- First
+node First(i: bool) returns (o:bool);
+let
+    o = i and Sofar(Z(not i));
+tel
+
+-- alternative definition.
+node First1( i : bool ) returns ( o : bool );
+let
+    o = i and Sofar(true -> pre(not i));
+tel
+
+-- Last
+node Last(i: bool) returns (o:bool);
+let
+   o = First(not i);
+tel
+
+-- auxilary temporal operators
+node Sofar( X : bool ) returns ( Y : bool );
+let
+ Y = X -> (X and (pre Y));
+tel
+
+node Z(i: bool) returns (o:bool);
+let
+    o = true -> (pre i);
+tel
+
+node Y(i: bool) returns (o:bool);
+let
+    o = false -> (pre i);
+tel
+
+node S(i, j:bool) returns (o:bool);
+let
+    o = j or (i and Y(o));
+tel

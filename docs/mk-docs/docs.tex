@@ -1,0 +1,76 @@
+% Latex PDF_2_PNG
+% pdflatex docs.tex
+% convert -strip -density 300  -quality 95 docs.pdf eq.png
+%
+\documentclass[multi={mymath},border=1pt]{standalone}
+
+%Input Packages
+\input{utils/packages}
+%Comamnds
+\input{utils/commands}
+
+% \usepackage{amsmath}
+
+\newenvironment{mymath}{$\displaystyle}{$}
+
+\begin{document}
+
+\begin{mymath}
+  \Phi,\Psi  \quad::=\quad \top\quad|\quad \bot\quad|\quad p \quad|\quad  \circ^{1} \Phi \quad|\quad \Phi \circ^{2} \Psi
+\end{mymath}
+
+\begin{mymath}
+  \circ^{1}\in\{\neg, \yesterday, \once, \historically\}
+\end{mymath}
+
+\begin{mymath}
+  \circ^{2}\in\{\wedge,\vee, \since\}
+\end{mymath}
+
+
+\begin{mymath}
+  (\sigma,i)\models\top iff \models\true
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models\bot iff  \models\false
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models p iff \sigma_i(p) = \true
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \neg \Phi iff  (\sigma,i)\not\models\Phi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models\Phi\wedge \Psi iff  (\sigma,i)\models\Phi  and (\sigma, i)\models\Psi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models\Phi\vee \Psi iff  (\sigma,i)\models\Phi  or (\sigma, i)\models\Psi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \yesterday \Phi iff  i>0 and (\sigma,{i-1})\models\Phi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \once \Phi iff  \exists j\in[0, i].(\sigma, {j}) \models\Psi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \historically \Phi  iff  \forall j\in[0, i].(\sigma, {j}) \models\Psi.
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \globally\Phi  iff  \forall j\in[i, n-1].(\sigma, {j})\models\Phi
+\end{mymath}
+
+\begin{mymath}
+  (\sigma,i)\models \Phi \since \Psi  iff \exists j\in[0, i].(\sigma, {j})\models\Psi and \forall k\in[j+1, i].(\sigma, k)\models\Phi
+\end{mymath}
+
+
+\end{document}

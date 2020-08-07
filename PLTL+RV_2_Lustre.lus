@@ -1,0 +1,165 @@
+-- Runtime Monitoring Operators (Start, End, Interval, First, Last)
+
+-- Start(\phi) := \phi is true in the current state and false in the previous state
+node Start(i: bool) returns (o:bool);
+let
+   o = i and (not Y(i));  
+tel
+
+--node Start(i: bool) returns (o:bool);
+--let
+--   o = i and (not (false -> pre(i)));  
+--tel
+
+-- End \phi is false in the current state and true in the previous state
+node End(i: bool) returns (o:bool);
+let
+   o = not i and Y(i);  
+tel
+
+--node End(i: bool) returns (o:bool);
+--let
+--   o = not i and Y(i);  
+--tel
+
+-- Interval [\phi,\psi) := \psi was never true since last time \phi was true, include the state when \phi was true.
+node Interval(i, j: bool) returns (o:bool);
+let
+   o = (not j) and S (Y(not j),  i);  
+tel
+
+--node Interval(i, j: bool) returns (o:bool);
+--let
+--   o = (not j) and S (false -> pre (not j),  i);  
+--tel
+
+-- First
+node First(i: bool) returns (o:bool);
+let
+    o = i and Sofar(Z(not i));
+tel
+
+--node First( i : bool ) returns ( o : bool );
+--let
+--    o = i and Sofar(true -> pre(not i));
+--tel
+
+-- Last
+node Last(i: bool) returns (o:bool);
+let
+   o = First(not i);
+tel
+
+-- Past Time LTL Temporal Operators (Y, Z, O, H, S, T) in Lustre.
+-- [Reference for Past Time LTL:]
+-- Cimatti, Alessandro, Marco Roveri, and Daniel Sheridan. "Bounded verification of past LTL." 
+-- In International Conference on Formal Methods in Computer-Aided Design, 
+-- pp. 245-259. Springer, Berlin, Heidelberg, 2004.
+
+
+-- Yesterday := Y(\phi) is true iff \phi holds at the previous time instant while it is always false at time point zero.
+
+node Y(i: bool) returns (o:bool);
+let
+    o = false -> (pre i);
+tel
+
+-- Weak Yesterday := Z(\phi) is true iff \phi holds at the previous time instant while it is always true at time point zero.
+
+node Z(i: bool) returns (o:bool);
+let
+    o = true -> (pre i);
+tel
+
+-- Usage: not(Y(i)) = Z (not(i))
+
+
+-- Once := O(\phi) was true iff \phi is true at some past time instance including the present time point.
+node O(i: bool) returns (o:bool);
+let
+    o = i or Y(o);
+tel
+
+-- alternative definition
+--node O(i: bool) returns (o:bool);
+--let
+--    o = i or (false -> pre o);
+--tel
+
+
+-- -- Sofar(X) is true at any point iff X has been true from the beginning until that point
+node Sofar( i : bool ) returns ( o : bool );
+let
+ o = i -> (i and (pre o));
+tel
+
+-- Historically := H(\phi) is true if and only if \phi is always true in the past including the present time.
+node H(i: bool) returns (o:bool);
+let
+    o = i and Z(o);
+tel
+
+--node H(i: bool) returns (o:bool);
+--let
+--    o = i and (true -> pre o);
+--tel
+
+
+-- X Since Y  
+-- \phi Since \psi is true if and only if \psi is true in the past and \phi is true from then up to now.
+node S(i, j:bool) returns (o:bool);
+let
+    o = j or (i and Y(o));
+tel
+
+--node S(i, j:bool) returns (o:bool);
+--let
+--    o = j or (i and (false ->(o)));
+--tel
+
+-- Since X Y. 
+-- Since(\phi,\psi) is true precisely when \phi has been true at some point and \psi has been continuously true afterwards.
+-- node Since( X, Y : bool ) returns ( Z : bool );
+-- let
+--  Z =  X or (Y and (false -> pre Z));
+--tel
+
+
+-- T (Trigger)
+-- Usage: \phi T \psi = \not (\not\phi S \not\psi)
+-- \phi T \psi is true if and only if \psi continuously holds in the past or \psi holds until \phi holds 
+node T(i: bool; j:bool) returns (o:bool);
+let
+    o = j and (i or Z(o));
+tel
+
+--node T(i: bool; j:bool) returns (o:bool);
+--let
+--    o = j and (i or (true -> o));
+--tel
+
+
+node EQ_PLTL(i:bool; j:bool) returns (o:bool);
+var p1: bool;
+var p2: bool;
+var p3: bool;
+var p4: bool;
+var p5: bool;
+var p6: bool;
+
+let
+    p1 = Z(not i) = not Y(i) ;
+    p2 = O(not i) = not H(i);
+    p3 = H(not i) = not O(i);
+    p4 = T(not i, not j) = not S(i,j) ;
+    p5 = Sofar(i) = H(i);
+    p6 = Y(i) = (false -> pre(i));
+    
+    --%PROPERTY "Z (not \phi) = not Y(\phi)" p1;
+    --%PROPERTY "O (not \phi) = not H(\phi)" p2;
+    --%PROPERTY "H (not \phi) = not O(\phi)" p3;
+    --%PROPERTY "T(not \phi, not \psi) = not S(\phi,\psi)" p4;
+    --%PROPERTY "Sofar(\phi) = H(\phi)" p5;
+    --%PROPERTY "Y(\phi) = false -> pre(\phi)" p6;
+
+tel
