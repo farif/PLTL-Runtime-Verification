@@ -1,7 +1,7 @@
 # Pastim-LTL-Runtime-Verification
 Pastime LTL for runtime verification
 
-[](https://kind.cs.uiowa.edu/app/)
+[Try Encoding in Kind2](https://kind.cs.uiowa.edu/app/)
 
 References:
 [1] Havelund, Klaus, and Grigore Roşu. "Synthesizing monitors for safety properties." International Conference on Tools and Algorithms for the Construction and Analysis of Systems. Springer, Berlin, Heidelberg, 2002.
