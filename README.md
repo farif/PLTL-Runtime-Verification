@@ -1,5 +1,4 @@
 # Pastim-LTL-Runtime-Verification
-Pastime LTL for runtime verification
 
 Try [Lustre Encoding](https://raw.githubusercontent.com/farif/Pastim-LTL-Runtime-Verification/master/PLTL%2BRV_2_Lustre.lus) using [Online Kind2](https://kind.cs.uiowa.edu/app/) Modle Checker.
 
