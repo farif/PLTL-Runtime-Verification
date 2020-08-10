@@ -3,7 +3,8 @@ Pastime LTL for runtime verification
 
 Try [Encoding](https://raw.githubusercontent.com/farif/Pastim-LTL-Runtime-Verification/master/PLTL%2BRV_2_Lustre.lus) in  [Online Kind2](https://kind.cs.uiowa.edu/app/)
 
-Supported Operators:
+## Supported Operators:
+
 ![PLTL Monitoring](./docs/mk-docs/img/pltl_monitor_operators.png)
 
 References:
