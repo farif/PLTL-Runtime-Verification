@@ -33,6 +33,12 @@ tel
 --   o = (not j) and S (false -> pre (not j),  i);  
 --tel
 
+-- Intervalw [\phi,\psi) := weak internal
+node Intervalw(i, j: bool) returns (o:bool);
+let
+   o = (not j) and S (Z(not j),  i);  
+tel
+
 -- First
 node First(i: bool) returns (o:bool);
 let
@@ -87,7 +93,7 @@ tel
 --tel
 
 
--- -- Sofar(X) is true at any point iff X has been true from the beginning until that point
+-- -- Sofar(\phi) is true at any point iff \phi has been true from the beginning until that point
 node Sofar( i : bool ) returns ( o : bool );
 let
  o = i -> (i and (pre o));
@@ -107,16 +113,25 @@ tel
 
 -- X Since Y  
 -- \phi Since \psi is true if and only if \psi is true in the past and \phi is true from then up to now.
-node S(i, j:bool) returns (o:bool);
+node S(i, j: bool) returns (o:bool);
 let
     o = j or (i and Y(o));
 tel
 
---node S(i, j:bool) returns (o:bool);
+--node S(i, j: bool) returns (o:bool);
 --let
 --    o = j or (i and (false ->(o)));
 --tel
 
+node Sw(i, j: bool) returns (o:bool);
+let
+    o = j or (i and Z(o));
+tel
+
+--node Sw(i, j: bool) returns (o:bool);
+--let
+--    o = j or (i and (true -> pre o));
+--tel
 -- Since X Y. 
 -- Since(\phi,\psi) is true precisely when \phi has been true at some point and \psi has been continuously true afterwards.
 -- node Since( X, Y : bool ) returns ( Z : bool );
@@ -139,27 +154,75 @@ tel
 --tel
 
 
-node EQ_PLTL(i:bool; j:bool) returns (o:bool);
+node EQ_PLTL(phi:bool; psi:bool) returns (o:bool);
 var p1: bool;
 var p2: bool;
 var p3: bool;
 var p4: bool;
 var p5: bool;
 var p6: bool;
+var p7: bool;
+var p8: bool;
+var p9: bool;
+
+var p10: bool;
+var p11: bool;
+var p12: bool;
+var p13: bool;
+var p14: bool;
+var p15: bool;
 
 let
-    p1 = Z(not i) = not Y(i) ;
-    p2 = O(not i) = not H(i);
-    p3 = H(not i) = not O(i);
-    p4 = T(not i, not j) = not S(i,j) ;
-    p5 = Sofar(i) = H(i);
-    p6 = Y(i) = (false -> pre(i));
+
+    p1 = Y(phi) = (false -> pre(phi));
+    --%PROPERTY "Y(\phi) = false -> pre(\phi)" p1;
+
+    p2 = Z(not phi) = not Y(phi) ;
+    --%PROPERTY "Z(not \phi) = not Y(\phi)" p2;
+
+    p3 = O(not phi) = not H(phi);
+    --%PROPERTY "O(not \phi) = not H(\phi)" p3;
+
+    p4 = H(not phi) = not O(phi);
+    --%PROPERTY "H(not \phi) = not O(\phi)" p4;
+
+    p5 = T(not phi, not psi) = not S(phi, psi) ;
+    --%PROPERTY "T(not \phi, not \psi) = not S(\phi,\psi)" p5;
     
-    --%PROPERTY "Z (not \phi) = not Y(\phi)" p1;
-    --%PROPERTY "O (not \phi) = not H(\phi)" p2;
-    --%PROPERTY "H (not \phi) = not O(\phi)" p3;
-    --%PROPERTY "T(not \phi, not \psi) = not S(\phi,\psi)" p4;
-    --%PROPERTY "Sofar(\phi) = H(\phi)" p5;
-    --%PROPERTY "Y(\phi) = false -> pre(\phi)" p6;
+    p6 = Sofar(phi) = H(phi);
+    --%PROPERTY "Sofar(\phi) = H(\phi)" p6;
+
+    ---------------------------------------------------------------
+    
+    -- Proposition1 Ref[]
+    p7 = O(phi) = S(true, phi);
+    --%PROPERTY "O(\phi) =  S(true, \phi)" p7;
+
+    p8 = H(phi) = not O(not phi);
+    --%PROPERTY "H(\phi) = not O(not \phi)" p8;
+    
+    p9 = H(phi) = Sw(phi, false);
+    --%PROPERTY "H(phi) = S(phi, false)" p9;
+    
+    p10 = Sw(phi, psi) = (H(phi) or S(phi, psi));
+    --%PROPERTY "Sw(\phi, \psi) = H(\phi) or S(\phi, \psi)" p10;
+
+    p11 = S(phi, psi) = (O(psi) and Sw(phi, psi));
+    --%PROPERTY "S(\phi, \psi) = O(\psi) and Sw(\phi, \psi)" p11;
+    
+    ---------------------------------------------------------------
+   
+    p12 = Start(phi) = (phi and not Y(phi));
+    --%PROPERTY p12;
+    
+    p13 = End(phi) = (not phi and Y(phi));
+    --%PROPERTY p13;
+    
+    p14 = Interval(phi, psi) = (not psi and S(Y(not psi), phi));
+    --%PROPERTY p14;
+    
+    p15 = Intervalw(phi, psi) = (not psi and Sw(Y(not psi), phi));
+
+    ---------------------------------------------------------------
 
 tel
